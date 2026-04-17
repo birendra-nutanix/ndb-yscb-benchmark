@@ -1,0 +1,252 @@
+/* NDB YCSB Benchmark Generator - Custom Styles */
+
+/* Base styles */
+body {
+    color: #212529;
+    background-color: #f8f9fa;
+}
+
+/* Main content area */
+main {
+    padding: 15px 25px;
+    box-sizing: border-box;
+}
+
+/* Dashboard content */
+.dashboard-content {
+    padding-top: 0;
+    animation: fadeIn 0.3s ease-in;
+    max-width: 100%;
+    overflow: visible;
+    width: 100%;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dashboard cards */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Overview cards for NDB Health */
+.overview-card {
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.overview-card:hover {
+    transform: translateY(-5px);
+}
+
+.overview-card h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.overview-card h6 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Engine detail cards */
+.card.h-100 {
+    transition: all 0.3s ease;
+}
+
+.card.h-100:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card.h-100 .card-header {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+}
+
+.card.h-100 .card-body {
+    font-size: 0.9rem;
+}
+
+.card.h-100 hr {
+    margin: 0.5rem 0;
+    opacity: 0.3;
+}
+
+/* Summary cards */
+.summary-card {
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.summary-card strong {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.summary-card.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.summary-card.warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.summary-card.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.summary-card.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Form styles */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Button styles */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Alert styles */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+/* Table styles */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+/* Badge styles */
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+}
+
+/* Progress bar */
+.progress {
+    border-radius: 8px;
+    height: 1.5rem;
+}
+
+/* Spinner */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Accordion */
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+
+.accordion-button:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Code blocks */
+pre {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+code {
+    color: #d63384;
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+}
+
+/* Validation feedback */
+.invalid-feedback {
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
+
+.was-validated .form-control:valid {
+    border-color: #28a745;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    main {
+        padding: 15px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}

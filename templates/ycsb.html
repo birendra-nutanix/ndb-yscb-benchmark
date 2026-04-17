@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDB YCSB Benchmark & Health Monitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-speedometer2"></i> NDB YCSB Benchmark & Health Monitor
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-fluid" style="margin-top: 70px;">
+        <a href="/" class="btn btn-outline-primary mb-3"><i class="bi bi-arrow-left"></i> Back to Home</a>
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Welcome!</strong> This tool generates shell scripts for running YCSB benchmarks across multiple databases managed by Nutanix Database Service (NDB).
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="benchmarkForm">
+            <!-- Section 1: NDB Connection -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-server"></i> 1. NDB Connection</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="ndbIp" class="form-label">NDB IP Address *</label>
+                                <input type="text" class="form-control" id="ndbIp" placeholder="10.10.10.50" required>
+                                <div class="invalid-feedback">Please enter a valid IP address.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="ndbPort" class="form-label">Port</label>
+                                <input type="number" class="form-control" id="ndbPort" value="8443">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label d-block">&nbsp;</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="verifySsl">
+                                    <label class="form-check-label" for="verifySsl">
+                                        Verify SSL
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="ndbUsername" class="form-label">Username *</label>
+                                <input type="text" class="form-control" id="ndbUsername" placeholder="admin" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="ndbPassword" class="form-label">Password *</label>
+                                <input type="password" class="form-control" id="ndbPassword" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Database Engine & Type Selection -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-database"></i> 2. Database Engine & Type Selection</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Select database engines and their deployment types:</p>
+                    
+                    <!-- PostgreSQL -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <div class="form-check">
+                                <input class="form-check-input engine-checkbox" type="checkbox" id="enginePostgres" value="postgresql">
+                                <label class="form-check-label fw-bold" for="enginePostgres">
+                                    <i class="bi bi-database-fill text-primary"></i> PostgreSQL
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body" id="postgresTypes" style="display: none;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="postgresSI" value="si">
+                                <label class="form-check-label" for="postgresSI">Single Instance (SI)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="postgresHA" value="ha">
+                                <label class="form-check-label" for="postgresHA">High Availability (HA)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MongoDB -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <div class="form-check">
+                                <input class="form-check-input engine-checkbox" type="checkbox" id="engineMongodb" value="mongodb">
+                                <label class="form-check-label fw-bold" for="engineMongodb">
+                                    <i class="bi bi-database-fill text-success"></i> MongoDB
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body" id="mongodbTypes" style="display: none;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mongodbSI" value="si">
+                                <label class="form-check-label" for="mongodbSI">Single Instance (SI)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mongodbRS" value="replicaset">
+                                <label class="form-check-label" for="mongodbRS">Replica Set (RS)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mongodbSharded" value="sharded">
+                                <label class="form-check-label" for="mongodbSharded">Sharded Cluster</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MySQL -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <div class="form-check">
+                                <input class="form-check-input engine-checkbox" type="checkbox" id="engineMysql" value="mysql">
+                                <label class="form-check-label fw-bold" for="engineMysql">
+                                    <i class="bi bi-database-fill text-warning"></i> MySQL
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body" id="mysqlTypes" style="display: none;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mysqlSI" value="si">
+                                <label class="form-check-label" for="mysqlSI">Single Instance (SI)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mysqlHA" value="ha">
+                                <label class="form-check-label" for="mysqlHA">High Availability (HA)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MariaDB -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <div class="form-check">
+                                <input class="form-check-input engine-checkbox" type="checkbox" id="engineMariadb" value="mariadb">
+                                <label class="form-check-label fw-bold" for="engineMariadb">
+                                    <i class="bi bi-database-fill text-warning"></i> MariaDB
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body" id="mariadbTypes" style="display: none;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mariadbSI" value="si">
+                                <label class="form-check-label" for="mariadbSI">Single Instance (SI)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mariadbHA" value="ha">
+                                <label class="form-check-label" for="mariadbHA">High Availability (HA)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Oracle -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <div class="form-check">
+                                <input class="form-check-input engine-checkbox" type="checkbox" id="engineOracle" value="oracle">
+                                <label class="form-check-label fw-bold" for="engineOracle">
+                                    <i class="bi bi-database-fill text-danger"></i> Oracle
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body" id="oracleTypes" style="display: none;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="oracleSI" value="si">
+                                <label class="form-check-label" for="oracleSI">Single Instance (SI)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="oracleSIHA" value="siha">
+                                <label class="form-check-label" for="oracleSIHA">SI with HA (SIHA)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="oracleRAC" value="rac">
+                                <label class="form-check-label" for="oracleRAC">Real Application Clusters (RAC)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MS SQL Server -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <div class="form-check">
+                                <input class="form-check-input engine-checkbox" type="checkbox" id="engineMssql" value="mssql">
+                                <label class="form-check-label fw-bold" for="engineMssql">
+                                    <i class="bi bi-database-fill text-info"></i> MS SQL Server
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body" id="mssqlTypes" style="display: none;">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mssqlSI" value="si">
+                                <label class="form-check-label" for="mssqlSI">Single Instance (SI)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="mssqlAAG" value="aag">
+                                <label class="form-check-label" for="mssqlAAG">Always On Availability Group (AAG)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-primary" id="validateBtn" disabled>
+                                <i class="bi bi-check-circle"></i> Validate NDB Connection & Fetch Databases
+                            </button>
+                            <span id="validationStatus" class="ms-3"></span>
+                        </div>
+                    </div>
+
+                    <div id="databasesList" class="mt-3" style="display: none;">
+                        <hr>
+                        <h6>Available Databases:</h6>
+                        <div id="databasesContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Database Credentials -->
+            <div class="card mb-4" id="dbCredentialsSection" style="display: none;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-key"></i> 3. Database Credentials</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Provide credentials for each selected database engine. These credentials will be validated before script generation.</p>
+                    <div id="dbCredentialsContent"></div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-success" id="validateDbCredsBtn" disabled>
+                                <i class="bi bi-shield-check"></i> Validate Database Credentials
+                            </button>
+                            <span id="dbCredValidationStatus" class="ms-3"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: YCSB Parameters -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-sliders"></i> 4. YCSB Parameters</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle"></i> <strong>Important:</strong> For long-running benchmarks, use <strong>Timeout</strong> to control duration instead of setting very high Record/Operation counts. 
+                        Maximum values are limited by Java Integer (2,147,483,647).
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="phase" class="form-label">Phase *</label>
+                                <select class="form-select" id="phase" required>
+                                    <option value="load">Load Only</option>
+                                    <option value="run">Run Only</option>
+                                    <option value="both" selected>Both (Load + Run)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="workloadType" class="form-label">Workload Type *</label>
+                                <select class="form-select" id="workloadType" required>
+                                    <option value="a">A - Update Heavy (50/50 read/update)</option>
+                                    <option value="b" selected>B - Read Mostly (95/5 read/update)</option>
+                                    <option value="c">C - Read Only (100% read)</option>
+                                    <option value="d">D - Read Latest (95/5 read/insert)</option>
+                                    <option value="e">E - Short Ranges (95/5 scan/insert)</option>
+                                    <option value="f">F - Read-Modify-Write</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="recordCount" class="form-label">Record Count *</label>
+                                <input type="number" class="form-control" id="recordCount" value="10000" min="1" max="2147483647" required>
+                                <small class="form-text text-muted">Max: 2,147,483,647 (Java int limit)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="operationCount" class="form-label">Operation Count *</label>
+                                <input type="number" class="form-control" id="operationCount" value="10000" min="0" max="2147483647" required>
+                                <small class="form-text text-muted">Set to 0 for unlimited (time-based). Max: 2,147,483,647</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="threadCount" class="form-label">Thread Count *</label>
+                                <input type="number" class="form-control" id="threadCount" value="10" min="1" required>
+                                <small class="form-text text-muted">Parallelism per database</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="loadTargetThroughput" class="form-label">Load Target Throughput (ops/sec)</label>
+                                <input type="number" class="form-control" id="loadTargetThroughput" value="0" min="0">
+                                <small class="form-text text-muted">0 = unlimited</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="runTargetThroughput" class="form-label">Run Target Throughput (ops/sec)</label>
+                                <input type="number" class="form-control" id="runTargetThroughput" value="0" min="0">
+                                <small class="form-text text-muted">0 = unlimited</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="retryLimit" class="form-label">Retry Limit</label>
+                                <input type="number" class="form-control" id="retryLimit" value="10" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="retryInterval" class="form-label">Retry Interval (sec)</label>
+                                <input type="number" class="form-control" id="retryInterval" value="3" min="1">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="timeout" class="form-label">Timeout (sec) *</label>
+                                <input type="number" class="form-control" id="timeout" value="3600" min="0" max="604800" required>
+                                <small class="form-text text-muted">Set to 0 for unlimited (count-based). Max: 7 days</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dynamic Benchmark Mode Indicator -->
+                    <div id="benchmarkModeIndicator" class="alert alert-primary" style="display: none; margin-top: 1rem;">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <strong>Benchmark Mode:</strong>
+                        <span id="benchmarkModeText"></span>
+                    </div>
+                    
+                    <!-- Advanced Options -->
+                    <div class="accordion" id="advancedAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#advancedOptions">
+                                    <i class="bi bi-gear"></i> Advanced Options
+                                </button>
+                            </h2>
+                            <div id="advancedOptions" class="accordion-collapse collapse" data-bs-parent="#advancedAccordion">
+                                <div class="accordion-body">
+                                    <div class="alert alert-warning">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        <strong>Important:</strong> If you specify any proportions, they must sum to exactly 1.0
+                                        <br><small>Example: read=0.5, update=0.3, insert=0.2, scan=0.0 → Sum = 1.0 ✓</small>
+                                        <br><small>Leave all empty to use workload defaults</small>
+                                    </div>
+                                    <p class="text-muted">Override default workload proportions (leave empty to use workload defaults):</p>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="readProportion" class="form-label">Read Proportion</label>
+                                                <input type="number" class="form-control" id="readProportion" step="0.01" min="0" max="1" placeholder="0.0 - 1.0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="updateProportion" class="form-label">Update Proportion</label>
+                                                <input type="number" class="form-control" id="updateProportion" step="0.01" min="0" max="1" placeholder="0.0 - 1.0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="insertProportion" class="form-label">Insert Proportion</label>
+                                                <input type="number" class="form-control" id="insertProportion" step="0.01" min="0" max="1" placeholder="0.0 - 1.0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="scanProportion" class="form-label">Scan Proportion</label>
+                                                <input type="number" class="form-control" id="scanProportion" step="0.01" min="0" max="1" placeholder="0.0 - 1.0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Remote Transfer (Optional) -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cloud-upload"></i> 5. Remote Transfer (Optional)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="enableRemoteTransfer">
+                        <label class="form-check-label" for="enableRemoteTransfer">
+                            <strong>Enable automatic transfer to remote cluster</strong>
+                        </label>
+                        <small class="form-text text-muted d-block">
+                            Automatically transfer and extract the generated scripts to a remote host via SSH
+                        </small>
+                    </div>
+
+                    <div id="remoteTransferFields" style="display: none;">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            The scripts will be transferred to the remote host, the target folder will be deleted if it exists, and the ZIP will be extracted automatically.
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="remoteHost" class="form-label">Remote Host IP *</label>
+                                    <input type="text" class="form-control" id="remoteHost" placeholder="10.10.10.100">
+                                    <small class="form-text text-muted">IP address of the remote cluster</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="remotePort" class="form-label">SSH Port</label>
+                                    <input type="number" class="form-control" id="remotePort" value="22">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-outline-primary w-100" id="testSshBtn">
+                                        <i class="bi bi-plug"></i> Test Connection
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="remoteUsername" class="form-label">SSH Username *</label>
+                                    <input type="text" class="form-control" id="remoteUsername" placeholder="root">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="remotePassword" class="form-label">SSH Password *</label>
+                                    <input type="password" class="form-control" id="remotePassword">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="remoteFolder" class="form-label">Target Folder</label>
+                                    <input type="text" class="form-control" id="remoteFolder" value="/root/io_script">
+                                    <small class="form-text text-muted">
+                                        Folder will be deleted if exists and recreated. Default: /root/io_script
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="sshTestResult" class="alert" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <button type="submit" class="btn btn-success btn-lg" id="generateBtn">
+                        <i class="bi bi-file-earmark-code"></i> Generate YCSB Script
+                    </button>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <span id="generateBtnHint">Generate and optionally transfer to remote cluster</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="card mb-4" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-check-circle"></i> Script Generated Successfully</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <h6>Your YCSB benchmark scripts package is ready!</h6>
+                    <p class="mb-2">Package name: <strong id="scriptName"></strong></p>
+                    <p class="mb-3">The package contains:</p>
+                    <ul>
+                        <li>Individual shell scripts for each database instance</li>
+                        <li>Master launcher script to run all benchmarks in parallel</li>
+                        <li>README with detailed instructions and troubleshooting</li>
+                        <li>Each script creates its own log directory in /tmp</li>
+                    </ul>
+                </div>
+                <div class="d-grid gap-2">
+                    <a id="downloadLink" class="btn btn-primary btn-lg" download>
+                        <i class="bi bi-download"></i> Download Scripts Package
+                    </a>
+                </div>
+                <div class="mt-3">
+                    <h6>How to run the benchmarks:</h6>
+                    <pre class="bg-light p-3 rounded"><code># Extract the ZIP file
+unzip <span id="scriptNameCmd"></span>
+
+# Run all benchmarks in parallel
+chmod +x run_all_benchmarks.sh
+./run_all_benchmarks.sh
+
+# Or run individual database benchmarks
+chmod +x ycsb_&lt;database_name&gt;.sh
+./ycsb_&lt;database_name&gt;.sh</code></pre>
+                    <p class="text-muted">
+                        <strong>Prerequisites:</strong> YCSB must be installed at /ycsb/bin/ycsb. 
+                        Check the README.md in the package for detailed instructions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+                </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/app.js?v=5"></script>
+    <script src="/static/js/ndb-health.js?v=5"></script>
+</body>
+</html>

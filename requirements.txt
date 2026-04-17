@@ -1,0 +1,17 @@
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+jinja2==3.1.3
+python-multipart==0.0.6
+pydantic==2.5.3
+requests==2.31.0
+aiofiles==23.2.1
+paramiko>=3.4.0  # SSH/SCP for remote file transfer
+influxdb-client>=1.36.0  # InfluxDB client for metrics
+
+# Database client libraries (optional - for credential validation)
+# Install only the ones you need for your databases
+psycopg2-binary>=2.9.9  # PostgreSQL
+pymongo>=4.6.0          # MongoDB
+mysql-connector-python>=8.2.0  # MySQL
+pymssql>=2.2.10         # MS SQL Server
+oracledb>=3.4.0        # Oracle (thin mode - no Oracle Client required)
