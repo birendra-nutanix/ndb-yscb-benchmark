@@ -1420,6 +1420,11 @@ async def get_sync_status(task_id: str):
         raise HTTPException(status_code=404, detail="Task not found")
     return sync_tasks[task_id]
 
+@app.get("/api/config/grafana")
+async def get_grafana_config():
+    """Return the configured Grafana URL"""
+    return {"url": config.GRAFANA_URL}
+
 
 # ============================================================================
 # Application Startup

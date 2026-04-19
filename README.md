@@ -43,6 +43,8 @@ A comprehensive web-based platform for YCSB benchmark generation and NDB environ
 - **Database Overview**: Real-time count of databases by engine type
 - **Alerts Monitoring**: View and track NDB alerts with time filters (1, 3, 7, 14, 30 days)
 - **Operations Tracking**: Monitor successful and failed operations with visual charts
+- **InfluxDB Sync**: Automatically sync historical operations data to InfluxDB for long-term storage
+- **Grafana Integration**: One-click access to Grafana dashboards directly from the UI
 - **Diagnostic Bundle Collection**: Collect NDB diagnostic bundles and upload to file server
 - **Time-based Filtering**: Consistent time filters across all monitoring features
 - **Visual Analytics**: Chart.js integration for operation type distribution
@@ -94,6 +96,25 @@ A comprehensive web-based platform for YCSB benchmark generation and NDB environ
 
 - Python 3.8 or higher
 - pip (Python package manager)
+- **InfluxDB** (Optional, for storing NDB operations data)
+- **Grafana** (Optional, for visualizing NDB operations data)
+
+### Environment Variables
+
+You can configure the InfluxDB and Grafana connections using a `.env` file in the root directory of the project. The application uses `python-dotenv` to automatically load these variables.
+
+Create a `.env` file with the following contents (or rely on the defaults):
+
+```bash
+# InfluxDB Configuration
+INFLUXDB_URL="http://10.111.48.231:8086"
+INFLUXDB_TOKEN="admin123"
+INFLUXDB_ORG="Nutanix"
+INFLUXDB_BUCKET="tomcat_jmx_metrics"
+
+# Grafana Configuration
+GRAFANA_URL="http://10.111.48.231:3000"
+```
 
 ### For Running Generated Scripts (Target VM)
 
@@ -355,6 +376,23 @@ Report: ycsb_results_20260211_103000.html
 ```
 
 ## Configuration
+
+### Environment Variables
+
+You can configure the InfluxDB and Grafana connections using a `.env` file in the root directory of the project. The application uses `python-dotenv` to automatically load these variables.
+
+Create a `.env` file with the following contents (or rely on the defaults):
+
+```bash
+# InfluxDB Configuration
+INFLUXDB_URL="http://10.111.48.231:8086"
+INFLUXDB_TOKEN="admin123"
+INFLUXDB_ORG="Nutanix"
+INFLUXDB_BUCKET="tomcat_jmx_metrics"
+
+# Grafana Configuration
+GRAFANA_URL="http://10.111.48.231:3000"
+```
 
 ### NDB API Endpoints
 

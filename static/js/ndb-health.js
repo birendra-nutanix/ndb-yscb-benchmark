@@ -675,6 +675,12 @@ async function pollSyncStatus(taskId, btn) {
             showToast(data.message, 'success');
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-cloud-upload"></i> Sync to InfluxDB';
+            
+            // Show the Grafana button
+            const grafanaBtn = document.getElementById('btn-open-grafana');
+            if (grafanaBtn) {
+                grafanaBtn.style.display = 'inline-block';
+            }
         } else if (data.status === 'failed') {
             showToast(data.message, 'danger');
             btn.disabled = false;
@@ -730,6 +736,21 @@ window.connectNDBHealth = connectNDBHealth;
 window.loadAlerts = loadAlerts;
 window.loadOperations = loadOperations;
 window.syncToInfluxDB = syncToInfluxDB;
+window.openGrafanaDashboard = async function() {
+    try {
+        const response = await fetch('/api/config/grafana');
+        if (!response.ok) throw new Error('Failed to fetch Grafana config');
+        
+        const data = await response.json();
+        const grafanaUrl = data.url;
+        
+        // Open in a new tab
+        window.open(grafanaUrl, '_blank');
+    } catch (error) {
+        console.error('Error opening Grafana:', error);
+        showToast('Could not determine Grafana URL. Please check your backend configuration.', 'danger');
+    }
+};
 
 /**
  * Initialize dashboard on page load
