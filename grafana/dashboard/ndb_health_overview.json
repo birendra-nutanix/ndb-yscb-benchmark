@@ -1,0 +1,626 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 6,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-jmx-metrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb-jmx-metrics"
+          },
+          "query": "from(bucket: \"tomcat_jmx_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ndb_operations\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> filter(fn: (r) => r[\"ndb_ip\"] =~ /^${ndb_ip:regex}$/)\n  |> filter(fn: (r) => r[\"ndb_version\"] =~ /^${ndb_version:regex}$/)\n  |> filter(fn: (r) => r[\"commit_id\"] =~ /^${commit_id:regex}$/)\n  |> filter(fn: (r) => r[\"engine\"] =~ /^${engine:regex}$/)\n  |> filter(fn: (r) => r[\"database_type\"] =~ /^${database_type:regex}$/)\n  |> count()\n  |> group()\n  |> sum()",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Operations",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-jmx-metrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb-jmx-metrics"
+          },
+          "query": "from(bucket: \"tomcat_jmx_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ndb_operations\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> filter(fn: (r) => r[\"status\"] == \"success\")\n  |> filter(fn: (r) => r[\"ndb_ip\"] =~ /^${ndb_ip:regex}$/)\n  |> filter(fn: (r) => r[\"ndb_version\"] =~ /^${ndb_version:regex}$/)\n  |> filter(fn: (r) => r[\"commit_id\"] =~ /^${commit_id:regex}$/)\n  |> filter(fn: (r) => r[\"engine\"] =~ /^${engine:regex}$/)\n  |> filter(fn: (r) => r[\"database_type\"] =~ /^${database_type:regex}$/)\n  |> count()\n  |> group()\n  |> sum()",
+          "refId": "A"
+        }
+      ],
+      "title": "Successful Operations",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-jmx-metrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb-jmx-metrics"
+          },
+          "query": "from(bucket: \"tomcat_jmx_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ndb_operations\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> filter(fn: (r) => r[\"status\"] == \"failed\")\n  |> filter(fn: (r) => r[\"ndb_ip\"] =~ /^${ndb_ip:regex}$/)\n  |> filter(fn: (r) => r[\"ndb_version\"] =~ /^${ndb_version:regex}$/)\n  |> filter(fn: (r) => r[\"commit_id\"] =~ /^${commit_id:regex}$/)\n  |> filter(fn: (r) => r[\"engine\"] =~ /^${engine:regex}$/)\n  |> filter(fn: (r) => r[\"database_type\"] =~ /^${database_type:regex}$/)\n  |> count()\n  |> group()\n  |> sum()",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed Operations",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-jmx-metrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "links": [
+            {
+              "title": "operation detail",
+              "url": "d/ff5ad698-2d85-49ce-9624-5fc2ac7f43a8/ndb-operation-detail?orgId=1&var-engine=${__data.fields.engine}&var-database_type=${__data.fields.database_type}&var-operation_type=${__data.fields.operation_type}"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "min_duration_ms"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max_duration_ms"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "avg_duration_ms"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "success"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "failed"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "engine"
+          }
+        ]
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb-jmx-metrics"
+          },
+          "query": "data = from(bucket: \"tomcat_jmx_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ndb_operations\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration_ms\")\n  |> filter(fn: (r) => r[\"ndb_ip\"] =~ /^${ndb_ip:regex}$/)\n  |> filter(fn: (r) => r[\"engine\"] =~ /^${engine:regex}$/)\n    |> filter(fn: (r) => r[\"ndb_version\"] =~ /^${ndb_version:regex}$/)\n  |> filter(fn: (r) => r[\"database_type\"] =~ /^${database_type:regex}$/)\n\n// 1. Count Successes\nsuccess_count = data\n  |> filter(fn: (r) => r[\"status\"] == \"success\")\n  |> group(columns: [\"engine\", \"database_type\", \"operation_type\"])\n  |> count(column: \"_value\")\n  |> toFloat()\n  |> set(key: \"_field\", value: \"success\")\n\n// 2. Count Failures\nfailed_count = data\n  |> filter(fn: (r) => r[\"status\"] == \"failed\")\n  |> group(columns: [\"engine\", \"database_type\", \"operation_type\"])\n  |> count(column: \"_value\")\n  |> toFloat()\n  |> set(key: \"_field\", value: \"failed\")\n\n// --- Filter data for duration metrics (SUCCESS ONLY) ---\nsuccess_data = data\n  |> filter(fn: (r) => r[\"status\"] == \"success\")\n\n// 3. Min Duration (Success only)\nmin_data = success_data\n  |> group(columns: [\"engine\", \"database_type\", \"operation_type\"])\n  |> min()\n  |> toFloat()\n  |> set(key: \"_field\", value: \"min_duration\")\n\n// 4. Max Duration (Success only)\nmax_data = success_data\n  |> group(columns: [\"engine\", \"database_type\", \"operation_type\"])\n  |> max()\n  |> toFloat()\n  |> set(key: \"_field\", value: \"max_duration\")\n\n// 5. Avg Duration (Success only)\navg_data = success_data\n  |> group(columns: [\"engine\", \"database_type\", \"operation_type\"])\n  |> mean()\n  |> toFloat()\n  |> set(key: \"_field\", value: \"avg_duration\")\n\n// 6. Combine Everything Together\nunion(tables: [success_count, failed_count, min_data, max_data, avg_data])\n  |> pivot(rowKey: [\"engine\", \"database_type\", \"operation_type\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> group()\n  |> map(fn: (r) => ({\n      engine: r.engine,\n      database_type: r.database_type,\n      operation_type: r.operation_type,\n      success: if exists r.success then r.success else 0.0,\n      failed: if exists r.failed then r.failed else 0.0,\n      min_duration_ms: if exists r.min_duration then r.min_duration else 0.0,\n      max_duration_ms: if exists r.max_duration then r.max_duration else 0.0,\n      avg_duration_ms: if exists r.avg_duration then r.avg_duration else 0.0\n  }))\n  |> sort(columns: [\"engine\", \"database_type\", \"operation_type\"])\n  |> yield(name: \"results\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Performance by Operation Type (Min/Max/Avg)",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "avg_duration_ms": 7,
+              "database_type": 1,
+              "engine": 0,
+              "failed": 4,
+              "max_duration_ms": 6,
+              "min_duration_ms": 5,
+              "operation_type": 2,
+              "success": 3
+            },
+            "renameByName": {
+              "avg_duration_ms": "avg",
+              "max_duration_ms": "max",
+              "min_duration_ms": "min"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-jmx-metrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb-jmx-metrics"
+          },
+          "query": "from(bucket: \"tomcat_jmx_metrics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ndb_operations\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration_ms\")\n  |> filter(fn: (r) => r[\"status\"] == \"success\") // Only measure successful operations\n  // Apply the Grafana variables\n  |> filter(fn: (r) => r[\"ndb_ip\"] =~ /^${ndb_ip:regex}$/)\n  |> filter(fn: (r) => r[\"engine\"] =~ /^${engine:regex}$/)\n  |> filter(fn: (r) => r[\"database_type\"] =~ /^${database_type:regex}$/)\n  // Group by operation type and NDB version\n  |> group(columns: [\"operation_type\", \"ndb_version\"])\n  // Calculate the average duration in milliseconds\n  |> mean()\n  // Convert milliseconds to minutes (divide by 60,000)\n  |> map(fn: (r) => ({ r with _value: r._value / 60000.0 }))\n  |> group()\n  // Keep only the necessary columns\n  |> keep(columns: [\"operation_type\", \"ndb_version\", \"_value\"])\n  // Pivot so that each ndb_version becomes a column\n  |> pivot(rowKey: [\"operation_type\"], columnKey: [\"ndb_version\"], valueColumn: \"_value\")\n  // Sort alphabetically by operation type\n  |> sort(columns: [\"operation_type\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "ndb release operation performance ",
+      "type": "table"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 38,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "10.122.62.49",
+          "value": "10.122.62.49"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "influxdb-jmx-metrics"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"ndb_ip\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "hide": 0,
+        "includeAll": false,
+        "label": "ndb_ip",
+        "multi": false,
+        "name": "ndb_ip",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"ndb_ip\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "influxdb-jmx-metrics"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"ndb_version\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "hide": 0,
+        "includeAll": true,
+        "label": "ndb_version",
+        "multi": false,
+        "name": "ndb_version",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"ndb_version\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "influxdb-jmx-metrics"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"commit_id\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "hide": 0,
+        "includeAll": true,
+        "label": "commit_id",
+        "multi": false,
+        "name": "commit_id",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"commit_id\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "influxdb-jmx-metrics"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"engine\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "hide": 0,
+        "includeAll": true,
+        "label": "engine",
+        "multi": false,
+        "name": "engine",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"engine\",\n  predicate: (r) => r._measurement == \"ndb_operations\",\n  start: v.timeRangeStart,\n  stop: v.timeRangeStop\n)\n  |> filter(fn: (r) => r._value != \"unknown\")",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "influxdb-jmx-metrics"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"database_type\",\n  predicate: (r) => r[\"_measurement\"] == \"ndb_operations\" and r[\"engine\"] =~ /^${engine:regex}$/\n)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "database_type",
+        "multi": false,
+        "name": "database_type",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\n\nschema.tagValues(\n  bucket: \"tomcat_jmx_metrics\",\n  tag: \"database_type\",\n  predicate: (r) => r[\"_measurement\"] == \"ndb_operations\" and r[\"engine\"] =~ /^${engine:regex}$/\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "NDB Operations Health Copy",
+  "uid": "b14b2fa3-e04f-4fd1-b4fc-fb7ef7fa1116",
+  "version": 35,
+  "weekStart": ""
+}
