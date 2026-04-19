@@ -1156,7 +1156,7 @@ def sync_operations_to_influxdb(task_id: str, ndb_conn: dict, days: int):
             if about_resp.status_code == 200:
                 about_data = about_resp.json()
                 # ndb_version = about_data.get("version", "unknown")
-                ndb_version = "2.9"
+                ndb_version = about_data.get("version", "unknown")
                 commit_id = about_data.get("buildId", "unknown")
             elif about_resp.status_code in [401, 403]:
                 sync_tasks[task_id] = {"status": "failed", "message": "NDB authentication failed on about endpoint"}
