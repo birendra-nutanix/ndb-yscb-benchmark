@@ -14,7 +14,6 @@ A comprehensive web-based platform for YCSB benchmark generation and NDB environ
 - ✅ **Multi-Dashboard UI** - Sidebar navigation for YCSB Generator and NDB Health
 - ✅ **Alerts Monitoring** - Track NDB alerts with time filters (1-30 days)
 - ✅ **Operations Tracking** - Visualize successful/failed operations with charts
-- ✅ **Diagnostic Bundle Collection** - Collect and upload NDB diagnostic bundles
 - ✅ **Auto Cleanup** - Local files deleted after successful remote transfer
 
 **Version 3.2.3**: Enhanced workload control with proportion validation
@@ -45,7 +44,6 @@ A comprehensive web-based platform for YCSB benchmark generation and NDB environ
 - **Operations Tracking**: Monitor successful and failed operations with visual charts
 - **InfluxDB Sync**: Automatically sync historical operations data to InfluxDB for long-term storage
 - **Grafana Integration**: One-click access to Grafana dashboards directly from the UI
-- **Diagnostic Bundle Collection**: Collect NDB diagnostic bundles and upload to file server
 - **Time-based Filtering**: Consistent time filters across all monitoring features
 - **Visual Analytics**: Chart.js integration for operation type distribution
 - **Refresh Capability**: Manual refresh for real-time updates

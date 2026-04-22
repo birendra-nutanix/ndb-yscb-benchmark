@@ -1,4 +1,6 @@
 import requests
+from dotenv import load_dotenv
+load_dotenv()
 import config
 
 url = f"{config.INFLUXDB_URL}/api/v2/delete?org={config.INFLUXDB_ORG}&bucket={config.INFLUXDB_BUCKET}"
@@ -13,7 +15,7 @@ for measurement in measurements:
     data = {
         "start": "1970-01-01T00:00:00Z",
         "stop": "2030-01-01T00:00:00Z",
-        "predicate": f"_measurement=\"ndb_operations\" AND operation_id=\"b9b98f1c-bc62-4544-bd76-a0933f810966\""
+        "predicate": f"_measurement=\"ndb_operations\" AND operation_id=\"ef9a24a3-1fca-4de4-b2d4-a59580d4e784\""
     }
 
     try:

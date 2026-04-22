@@ -984,7 +984,7 @@ async def get_ndb_operations(request: NDBHealthConnectionRequest, days: int = 1)
             operations_url = (
                 f"{ndb_url}/era/v0.9/operations/short-info"
                 f"?hide-subops=true&user-triggered=true&system-triggered=false"
-                f"&time-zone=Asia/Calcutta&count-summary=true"
+                f"&time-zone=UTC&count-summary=true"
                 f"&limit={limit}&skip={skip}&days={days}&descending=false"
             )
             
@@ -1250,7 +1250,7 @@ def sync_operations_to_influxdb(task_id: str, ndb_conn: dict, days: int):
             operations_url = (
                 f"{ndb_url}/era/v0.9/operations/short-info"
                 f"?hide-subops=true&user-triggered=true&system-triggered=false"
-                f"&time-zone=Asia/Calcutta&count-summary=true"
+                f"&time-zone=UTC&count-summary=true"
                 f"&limit={limit}&skip={skip}&days={days}&descending=false"
             )
             operations_response = requests.get(operations_url, headers=headers, verify=False, timeout=30)
@@ -1313,7 +1313,7 @@ def sync_operations_to_influxdb(task_id: str, ndb_conn: dict, days: int):
         
         for op in all_operations:
             op_id = op.get("id")
-
+            
             if not op_id or op_id in existing_ops:
                 continue
                 
@@ -1347,10 +1347,27 @@ def sync_operations_to_influxdb(task_id: str, ndb_conn: dict, days: int):
             duration_ms = 0
             if op.get("startTime") and op.get("endTime"):
                 try:
-                    start_dt = datetime.fromisoformat(op.get("startTime").replace('Z', '+00:00'))
-                    end_dt = datetime.fromisoformat(op.get("endTime").replace('Z', '+00:00'))
+                    # NDB API sometimes returns timestamps without 'Z' or timezone info
+                    start_str = op.get("startTime")
+                    end_str = op.get("endTime")
+                    
+                    if not start_str.endswith('Z') and '+' not in start_str:
+                        start_str += 'Z'
+                    if not end_str.endswith('Z') and '+' not in end_str:
+                        end_str += 'Z'
+                        
+                    start_dt = datetime.fromisoformat(start_str.replace('Z', '+00:00'))
+                    end_dt = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
+                    
+                    # Calculate duration
                     duration_ms = int((end_dt - start_dt).total_seconds() * 1000)
-                except Exception:
+                    
+                    # Sanity check: if duration is negative or absurdly large (e.g., > 1 year), default to 0
+                    if duration_ms < 0 or duration_ms > 31536000000:
+                        logger.warning(f"Absurd duration calculated for op {op_id}: {duration_ms}ms. Setting to 0.")
+                        duration_ms = 0
+                except Exception as e:
+                    logger.warning(f"Failed to calculate duration for op {op_id}: {e}")
                     pass
             
             pct_complete = op.get("percentageComplete", 100)
